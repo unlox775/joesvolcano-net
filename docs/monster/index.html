@@ -1,0 +1,49 @@
+<style type="text/css">
+  button {
+    font-size: 4vw;
+    width: 32%;
+    height: 20vh;
+    display: inline-block;
+    margin-top: 2vw;
+  }
+</style>
+
+<script>
+var snds = [
+new Audio("burp1.wav"),
+new Audio("burp-short.wav"),
+new Audio("cute-chomp.wav"),
+new Audio("omm-nomm.wav"),
+new Audio("3-noms.wav"),
+new Audio("6-noms.wav"),
+new Audio("long-nom.wav"),
+new Audio("grr-nom.wav"),
+new Audio("pig-noms.wav"),
+new Audio("baby-noms.wav"),
+new Audio("slurp.wav"),
+new Audio("slurp-aah.wav")
+];
+
+var currentSound = null;
+function play(i) {
+  if ( currentSound !== null ) {
+    currentSound.pause();
+    currentSound.currentTime=0;
+  }
+  currentSound = snds[i];
+  currentSound.play()  
+}
+</script>
+
+<button onclick="play(0)">Burp 1</button>
+<button onclick="play(1)">Short Burp</button>
+<button onclick="play(2)">Cute Chomp</button>
+<button onclick="play(3)">Omm Nomm</button>
+<button onclick="play(4)">3 Noms</button>
+<button onclick="play(5)">6 Noms</button>
+<button onclick="play(6)">Long Nom</button>
+<button onclick="play(7)">Grr Nom</button>
+<button onclick="play(8)">Pig Noms</button>
+<button onclick="play(9)">Baby Noms</button>
+<button onclick="play(10)">Splurp</button>
+<button onclick="play(11)">Slurp, Aah!</button>
