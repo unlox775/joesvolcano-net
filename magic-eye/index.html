@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STL → Depth Map Preview</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+      body {
+        margin: 16px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 380px 1fr;
+        align-items: start;
+      }
+      .panel {
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        border-radius: 10px;
+        padding: 12px;
+        display: grid;
+        gap: 10px;
+      }
+      .panel h2 {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+      .row {
+        display: grid;
+        gap: 6px;
+      }
+      label {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+      input[type="range"] {
+        width: 100%;
+      }
+      .value {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.9;
+      }
+      canvas {
+        width: min(100%, 1000px);
+        height: auto;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        border-radius: 10px;
+        background: black;
+        image-rendering: pixelated;
+      }
+      .btnRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      button {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        background: rgba(127, 127, 127, 0.08);
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      select,
+      input[type="number"] {
+        padding: 6px 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        background: rgba(127, 127, 127, 0.08);
+      }
+      .status {
+        font-size: 12px;
+        opacity: 0.85;
+        line-height: 1.4;
+        white-space: pre-wrap;
+      }
+      @media (max-width: 900px) {
+        body {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-CeJ2euCG.js"></script>
+  </head>
+  <body>
+    <div class="panel">
+      <h2>Inputs</h2>
+      <div class="row">
+        <label>Model source</label>
+        <select id="modelSource">
+          <option value="primitive" selected>Primitive (default)</option>
+          <option value="stl">Upload STL</option>
+        </select>
+      </div>
+
+      <div class="row" id="primitiveControls">
+        <label>Primitive</label>
+        <select id="primitive">
+          <option value="cube" selected>Cube</option>
+          <option value="rectPrism">Rectangular prism</option>
+          <option value="sphere">Sphere</option>
+          <option value="cylinder">Cylinder</option>
+          <option value="twoCubes">Two cubes (offset)</option>
+          <option value="threePrisms">Three prisms (stack)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>STL file</label>
+        <input id="file" type="file" accept=".stl" />
+      </div>
+
+      <div class="row">
+        <label>Max dimension <span class="value" id="maxDimValue">1000</span>px</label>
+        <input id="maxDim" type="range" min="128" max="2000" step="8" value="1000" />
+      </div>
+
+      <div class="row">
+        <label>Aspect ratio</label>
+        <select id="aspect">
+          <option value="1:1" selected>1:1</option>
+          <option value="16:9">16:9</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+          <option value="9:16">9:16</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+
+      <div class="row" id="customAspectControls" style="display: none">
+        <label>Custom width × height</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+          <input id="customWidth" type="number" min="64" max="4000" value="1000" />
+          <input id="customHeight" type="number" min="64" max="4000" value="1000" />
+        </div>
+      </div>
+      <div class="value" id="computedDims">Output: 1000×1000</div>
+
+      <div class="row">
+        <label>Rotate X <span class="value" id="rotXValue">0</span>°</label>
+        <input id="rotX" type="range" min="-180" max="180" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label>Rotate Y <span class="value" id="rotYValue">0</span>°</label>
+        <input id="rotY" type="range" min="-180" max="180" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label>Rotate Z <span class="value" id="rotZValue">0</span>°</label>
+        <input id="rotZ" type="range" min="-180" max="180" step="1" value="0" />
+      </div>
+
+      <div class="row">
+        <label>Margin X (left/right) <span class="value" id="mxValue">10</span>%</label>
+        <input id="mx" type="range" min="0" max="40" step="1" value="10" />
+      </div>
+      <div class="row">
+        <label>Margin Y (top/bottom) <span class="value" id="myValue">10</span>%</label>
+        <input id="my" type="range" min="0" max="40" step="1" value="10" />
+      </div>
+      <div class="row">
+        <label>Margin Z (front/back) <span class="value" id="mzValue">10</span>%</label>
+        <input id="mz" type="range" min="0" max="40" step="1" value="10" />
+      </div>
+
+      <h2>Output</h2>
+      <div class="row">
+        <label>Mode</label>
+        <select id="mode">
+          <option value="depth" selected>Depth map</option>
+          <option value="magicEye">Magic Eye (stereogram)</option>
+        </select>
+      </div>
+
+      <div class="status" id="status">Select an STL…</div>
+    </div>
+
+    <div class="panel">
+      <h2>Preview</h2>
+      <div class="btnRow">
+        <button id="downloadDepth">Download depth PNG</button>
+        <button id="downloadStereo">Download stereogram PNG</button>
+      </div>
+
+      <div class="row" id="magicEyeControls" style="display: none">
+        <label>Noisy background</label>
+        <input id="bgFile" type="file" accept="image/*" />
+        <div class="btnRow">
+          <button id="useColor">Use bundled color noise (default)</button>
+          <button id="useBw">Use bundled B/W noise</button>
+        </div>
+
+        <div class="row">
+          <label>Min separation <span class="value" id="minSepValue">28</span>px</label>
+          <input id="minSep" type="range" min="4" max="80" step="1" value="28" />
+        </div>
+        <div class="row">
+          <label>Max separation <span class="value" id="maxSepValue">90</span>px</label>
+          <input id="maxSep" type="range" min="10" max="160" step="1" value="90" />
+        </div>
+        <div class="row">
+          <label>Eye mode</label>
+          <select id="eyeMode">
+            <option value="parallel" selected>Parallel (standard / wall-eyed)</option>
+            <option value="cross">Cross-eyed</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label>Z scale <span class="value" id="zScaleValue">1.0</span></label>
+          <input id="zScale" type="range" min="0" max="2" step="0.1" value="1.0" />
+        </div>
+
+        <div class="row">
+          <label>Depth gamma <span class="value" id="gammaValue">1.0</span></label>
+          <input id="gamma" type="range" min="0.3" max="2.5" step="0.1" value="1.0" />
+        </div>
+      </div>
+
+      <canvas id="canvas" width="1000" height="1000"></canvas>
+    </div>
+
+  </body>
+</html>
+
