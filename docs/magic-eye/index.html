@@ -36,6 +36,75 @@
         font-size: 12px;
         opacity: 0.9;
       }
+      .help {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+        border-radius: 999px;
+        border: 1px solid rgba(127, 127, 127, 0.45);
+        background: rgba(127, 127, 127, 0.12);
+        font-size: 11px;
+        line-height: 1;
+        cursor: help;
+        user-select: none;
+        position: relative;
+        vertical-align: middle;
+        transform: translateY(-0.5px);
+      }
+      .help:focus {
+        outline: none;
+      }
+      .help:focus-visible {
+        outline: 2px solid rgba(80, 160, 255, 0.75);
+        outline-offset: 2px;
+      }
+      .help::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: calc(100% + 2px);
+        width: 10px;
+        height: 10px;
+        transform: rotate(45deg);
+        background: rgba(24, 24, 24, 0.96);
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        border-top: 1px solid rgba(255, 255, 255, 0.16);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 120ms ease,
+          transform 120ms ease;
+      }
+      .help::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: 0;
+        top: calc(100% + 8px);
+        width: min(420px, 70vw);
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(24, 24, 24, 0.96);
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+        white-space: pre-line;
+        line-height: 1.35;
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(-2px);
+        pointer-events: none;
+        z-index: 20;
+      }
+      .help:hover::after,
+      .help:focus-visible::after,
+      .help:hover::before,
+      .help:focus-visible::before {
+        opacity: 1;
+        transform: translateY(0);
+      }
       input[type="range"] {
         width: 100%;
       }
@@ -86,7 +155,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-CeJ2euCG.js"></script>
+    <script type="module" crossorigin src="./assets/index-3f5xJVq1.js"></script>
   </head>
   <body>
     <div class="panel">
@@ -117,7 +186,7 @@
       </div>
 
       <div class="row">
-        <label>Max dimension <span class="value" id="maxDimValue">1000</span>px</label>
+        <label>Max dimension: <span class="value" id="maxDimValue">1000</span>px</label>
         <input id="maxDim" type="range" min="128" max="2000" step="8" value="1000" />
       </div>
 
@@ -143,28 +212,28 @@
       <div class="value" id="computedDims">Output: 1000×1000</div>
 
       <div class="row">
-        <label>Rotate X <span class="value" id="rotXValue">0</span>°</label>
-        <input id="rotX" type="range" min="-180" max="180" step="1" value="0" />
+        <label>Rotate X: <span class="value" id="rotXValue">107</span>°</label>
+        <input id="rotX" type="range" min="-180" max="180" step="1" value="107" />
       </div>
       <div class="row">
-        <label>Rotate Y <span class="value" id="rotYValue">0</span>°</label>
-        <input id="rotY" type="range" min="-180" max="180" step="1" value="0" />
+        <label>Rotate Y: <span class="value" id="rotYValue">12</span>°</label>
+        <input id="rotY" type="range" min="-180" max="180" step="1" value="12" />
       </div>
       <div class="row">
-        <label>Rotate Z <span class="value" id="rotZValue">0</span>°</label>
-        <input id="rotZ" type="range" min="-180" max="180" step="1" value="0" />
+        <label>Rotate Z: <span class="value" id="rotZValue">180</span>°</label>
+        <input id="rotZ" type="range" min="-180" max="180" step="1" value="180" />
       </div>
 
       <div class="row">
-        <label>Margin X (left/right) <span class="value" id="mxValue">10</span>%</label>
+        <label>Margin X (left/right): <span class="value" id="mxValue">10</span>%</label>
         <input id="mx" type="range" min="0" max="40" step="1" value="10" />
       </div>
       <div class="row">
-        <label>Margin Y (top/bottom) <span class="value" id="myValue">10</span>%</label>
+        <label>Margin Y (top/bottom): <span class="value" id="myValue">10</span>%</label>
         <input id="my" type="range" min="0" max="40" step="1" value="10" />
       </div>
       <div class="row">
-        <label>Margin Z (front/back) <span class="value" id="mzValue">10</span>%</label>
+        <label>Margin Z (front/back): <span class="value" id="mzValue">10</span>%</label>
         <input id="mz" type="range" min="0" max="40" step="1" value="10" />
       </div>
 
@@ -188,7 +257,16 @@
       </div>
 
       <div class="row" id="magicEyeControls" style="display: none">
-        <label>Noisy background</label>
+        <label>
+          Noisy background:
+          <span
+            class="help"
+            tabindex="0"
+            aria-label="Help: Noisy background"
+            data-tooltip="This is the repeating texture your eyes lock onto.&#10;&#10;The stereogram works by shifting this texture left/right by tiny amounts based on depth. Noisy dot patterns are easiest to fuse. If the background is too smooth (or too repetitive), your eyes may not find a stable match."
+            >?</span
+          >
+        </label>
         <input id="bgFile" type="file" accept="image/*" />
         <div class="btnRow">
           <button id="useColor">Use bundled color noise (default)</button>
@@ -196,15 +274,44 @@
         </div>
 
         <div class="row">
-          <label>Min separation <span class="value" id="minSepValue">28</span>px</label>
-          <input id="minSep" type="range" min="4" max="80" step="1" value="28" />
+          <label>
+            Min separation:
+            <span class="value" id="minSepValue">29</span>px
+            <span
+              class="help"
+              tabindex="0"
+              aria-label="Help: Min separation"
+              data-tooltip="This is the low end of the horizontal shift range (in pixels).&#10;&#10;Bigger separations are harder to fuse but can make the 3D effect feel deeper. Smaller separations are easier to fuse but look flatter.&#10;&#10;Important: Eye mode flips depth direction. In parallel mode, smaller separation tends to feel closer; in cross-eyed mode, it tends to feel farther."
+              >?</span
+            >
+          </label>
+          <input id="minSep" type="range" min="4" max="80" step="1" value="29" />
         </div>
         <div class="row">
-          <label>Max separation <span class="value" id="maxSepValue">90</span>px</label>
-          <input id="maxSep" type="range" min="10" max="160" step="1" value="90" />
+          <label>
+            Max separation:
+            <span class="value" id="maxSepValue">92</span>px
+            <span
+              class="help"
+              tabindex="0"
+              aria-label="Help: Max separation"
+              data-tooltip="This is the high end of the horizontal shift range (in pixels).&#10;&#10;Together with Min separation, it defines how far dots can slide left/right between near and far depths.&#10;&#10;If the range is too wide, you may see tearing/stripes or your eyes may not lock. If the range is too narrow, the 3D effect is subtle."
+              >?</span
+            >
+          </label>
+          <input id="maxSep" type="range" min="10" max="160" step="1" value="92" />
         </div>
         <div class="row">
-          <label>Eye mode</label>
+          <label>
+            Eye mode:
+            <span
+              class="help"
+              tabindex="0"
+              aria-label="Help: Eye mode"
+              data-tooltip="Parallel (standard / wall-eyed): relax focus as if looking through the image.&#10;&#10;Cross-eyed: gently cross your eyes so the two halves overlap.&#10;&#10;This setting flips which direction feels closer vs farther."
+              >?</span
+            >
+          </label>
           <select id="eyeMode">
             <option value="parallel" selected>Parallel (standard / wall-eyed)</option>
             <option value="cross">Cross-eyed</option>
@@ -212,12 +319,32 @@
         </div>
 
         <div class="row">
-          <label>Z scale <span class="value" id="zScaleValue">1.0</span></label>
-          <input id="zScale" type="range" min="0" max="2" step="0.1" value="1.0" />
+          <label>
+            Z scale:
+            <span class="value" id="zScaleValue">0.5</span>
+            <span
+              class="help"
+              tabindex="0"
+              aria-label="Help: Z scale"
+              data-tooltip="How strong the depth effect is.&#10;&#10;0 = completely flat (no 3D).&#10;1 = normal.&#10;Higher values exaggerate depth, but can cause artifacts or make it harder to fuse."
+              >?</span
+            >
+          </label>
+          <input id="zScale" type="range" min="0" max="2" step="0.1" value="0.5" />
         </div>
 
         <div class="row">
-          <label>Depth gamma <span class="value" id="gammaValue">1.0</span></label>
+          <label>
+            Depth gamma:
+            <span class="value" id="gammaValue">1.0</span>
+            <span
+              class="help"
+              tabindex="0"
+              aria-label="Help: Depth gamma"
+              data-tooltip="A curve that redistributes depth before turning it into dot shifts.&#10;&#10;Gamma = 1 is linear.&#10;Lower than 1 makes near-vs-far differences show up sooner (more punchy).&#10;Higher than 1 compresses the effect so mid-depths change more gently (sometimes easier to fuse)."
+              >?</span
+            >
+          </label>
           <input id="gamma" type="range" min="0.3" max="2.5" step="0.1" value="1.0" />
         </div>
       </div>
