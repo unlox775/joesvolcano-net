@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2a080c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Melodrama">
+  <title>Melodrama — Elma Drama</title>
+  <style>
+    :root {
+      --bg: #1c070a;
+      --bg-card: #3b1016;
+      --bg-card-2: #4a141c;
+      --gold: #e6c35c;
+      --gold-deep: #c9a227;
+      --cream: #fff4d6;
+      --ink: #2a080c;
+      --muted: #e8c98a;
+      --danger: #ffd0a8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: radial-gradient(ellipse at top, #4a141c 0%, var(--bg) 55%);
+      color: var(--cream);
+      font-family: Georgia, "Palatino Linotype", Palatino, "Times New Roman", serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100dvh;
+    }
+
+    .page {
+      min-height: 100dvh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding:
+        max(10px, env(safe-area-inset-top))
+        max(14px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(14px, env(safe-area-inset-left));
+      gap: 10px;
+    }
+
+    header {
+      text-align: center;
+      flex: 0 0 auto;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 3.6vw, 2.1rem);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: clamp(0.8rem, 1.8vw, 1rem);
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .notice {
+      display: none;
+      margin: 0;
+      padding: 8px 12px;
+      border: 1px solid var(--gold-deep);
+      border-radius: 10px;
+      background: rgba(80, 20, 20, 0.7);
+      color: var(--danger);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .notice.is-visible {
+      display: block;
+    }
+
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .line-card {
+      flex: 1.15 1 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: clamp(12px, 2.4vh, 22px) clamp(14px, 2.5vw, 28px);
+      background: linear-gradient(180deg, var(--bg-card-2), var(--bg-card));
+      border: 2px solid var(--gold-deep);
+      border-radius: 18px;
+      box-shadow: 0 0 0 1px rgba(230, 195, 92, 0.15), 0 10px 28px rgba(0, 0, 0, 0.35);
+      min-height: 22vh;
+    }
+
+    .line {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(1.45rem, 3.1vw + 0.7rem, 2.7rem);
+      line-height: 1.28;
+      font-weight: 700;
+    }
+
+    .who-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 48px;
+    }
+
+    .who-btn {
+      appearance: none;
+      border: 1.5px solid var(--gold);
+      background: transparent;
+      color: var(--gold);
+      font: inherit;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      padding: 10px 16px;
+      min-height: 44px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .who-btn:active {
+      background: rgba(230, 195, 92, 0.18);
+    }
+
+    .who-btn[hidden],
+    .character[hidden] {
+      display: none !important;
+    }
+
+    .character {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(1.1rem, 2.4vw + 0.4rem, 1.7rem);
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    .emotions {
+      flex: 1 1 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      min-height: 26vh;
+    }
+
+    .emotion-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      padding: clamp(10px, 1.8vh, 18px) 10px;
+      background: #2c0c11;
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      min-width: 0;
+    }
+
+    .emotion-label {
+      margin: 0;
+      font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .emotion-emoji {
+      font-size: clamp(2.4rem, 7vw, 4.4rem);
+      line-height: 1;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    }
+
+    .emotion-name {
+      margin: 0;
+      font-size: clamp(1.15rem, 2.6vw + 0.35rem, 1.95rem);
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .randomize {
+      appearance: none;
+      flex: 0 0 auto;
+      width: 100%;
+      min-height: clamp(72px, 14vh, 118px);
+      border: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f0d36a, var(--gold-deep));
+      color: var(--ink);
+      font: inherit;
+      font-size: clamp(1.7rem, 5vw, 2.7rem);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #7a5a10, 0 12px 22px rgba(0, 0, 0, 0.4);
+    }
+
+    .randomize:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #7a5a10, 0 6px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .randomize:disabled {
+      opacity: 0.55;
+      box-shadow: none;
+    }
+
+    @media (max-width: 560px) {
+      .emotions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 820px) {
+      .page {
+        gap: 8px;
+      }
+      .line-card {
+        min-height: 0;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      .emotions {
+        min-height: 0;
+      }
+      .emotion-card {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Melodrama</h1>
+      <p>Pick an emotion — or play the line twice</p>
+    </header>
+
+    <p id="notice" class="notice" role="status"></p>
+
+    <div class="stage">
+      <section class="line-card" aria-live="polite">
+        <p id="line" class="line">Tap Randomize for a line.</p>
+        <div class="who-row">
+          <button type="button" id="who-btn" class="who-btn" hidden>Show who says it</button>
+          <p id="character" class="character" hidden></p>
+        </div>
+      </section>
+
+      <section class="emotions" aria-live="polite">
+        <article class="emotion-card">
+          <p class="emotion-label">First emotion</p>
+          <div id="emotion1-emoji" class="emotion-emoji" aria-hidden="true">🎭</div>
+          <p id="emotion1-name" class="emotion-name">?</p>
+        </article>
+        <article class="emotion-card">
+          <p class="emotion-label">Second emotion</p>
+          <div id="emotion2-emoji" class="emotion-emoji" aria-hidden="true">🎭</div>
+          <p id="emotion2-name" class="emotion-name">?</p>
+        </article>
+      </section>
+    </div>
+
+    <button type="button" id="randomize" class="randomize">Randomize</button>
+  </div>
+
+  <script src="shuffle-bag.js"></script>
+  <script>
+    // Embedded fallback so the page still works from file:// if fetch fails.
+    var FALLBACK_LINES = [
+      { character: "Lady Blackwood", line: "The ink on this manuscript is still wet—and so, I fear, is the blood!" },
+      { character: "Professor Grimshaw", line: "I did not murder the critic. I merely… edited him out of existence." },
+      { character: "Miss Evangeline Poe", line: "Every candle in this house went out at once. That is not a draft. That is a warning." },
+      { character: "Count Ravenshadow", line: "You dare accuse me? In my own crumbling, obviously-haunted library?" },
+      { character: "Tilly the Maid", line: "I saw a figure on the stair—wearing YOUR cloak, madam, and it had no face!" },
+      { character: "Inspector Holloway", line: "Nobody leaves this manor until I find the missing chapter—and the missing heir." }
+    ];
+
+    var EMOTIONS = [
+      { id: "sleepy", name: "Sleepy", emoji: "😴" },
+      { id: "happy", name: "Happy", emoji: "😄" },
+      { id: "scared", name: "Scared / Nervous", emoji: "😰" },
+      { id: "angry", name: "Angry", emoji: "😡" },
+      { id: "bored", name: "Bored", emoji: "😑" },
+      { id: "heartbroken", name: "Heartbroken / Sobbing", emoji: "😭" },
+      { id: "suspicious", name: "Suspicious", emoji: "🤨" },
+      { id: "villain", name: "Over-the-top Villain", emoji: "😈" }
+    ];
+
+    // Identical inline copy so the page still works if shuffle-bag.js cannot load.
+    function fisherYates(arr, random) {
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(random() * (i + 1));
+        var tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+      }
+      return arr;
+    }
+
+    function InlineShuffleBag(items, options) {
+      options = options || {};
+      this.items = items.slice();
+      this.idOf = options.idOf || function (item) { return item; };
+      this.random = options.random || Math.random;
+      this.bag = [];
+      this.lastId = null;
+      this.recentIds = [];
+    }
+
+    InlineShuffleBag.prototype._refill = function () {
+      this.bag = fisherYates(this.items.slice(), this.random);
+      if (this.lastId == null || this.bag.length < 2) return;
+      if (this.idOf(this.bag[0]) === this.lastId) {
+        for (var i = 1; i < this.bag.length; i++) {
+          if (this.idOf(this.bag[i]) !== this.lastId) {
+            var tmp = this.bag[0];
+            this.bag[0] = this.bag[i];
+            this.bag[i] = tmp;
+            break;
+          }
+        }
+      }
+    };
+
+    InlineShuffleBag.prototype._takePreferred = function (avoidIds) {
+      if (this.bag.length === 0) this._refill();
+      var idx = 0;
+      if (avoidIds && avoidIds.size) {
+        for (var i = 0; i < this.bag.length; i++) {
+          if (!avoidIds.has(this.idOf(this.bag[i]))) {
+            idx = i;
+            break;
+          }
+        }
+      }
+      var taken = this.bag.splice(idx, 1)[0];
+      this.lastId = this.idOf(taken);
+      return taken;
+    };
+
+    InlineShuffleBag.prototype.draw = function () {
+      var item = this._takePreferred(null);
+      this.recentIds = [this.lastId];
+      return item;
+    };
+
+    InlineShuffleBag.prototype.drawPair = function () {
+      var avoid = new Set(this.recentIds);
+      var first = this._takePreferred(avoid);
+      avoid.add(this.idOf(first));
+      var second = this._takePreferred(avoid);
+      this.recentIds = [this.idOf(first), this.idOf(second)];
+      return [first, second];
+    };
+
+    var ShuffleBag = (window.MelodramaBags && window.MelodramaBags.ShuffleBag) || InlineShuffleBag;
+
+    var lineEl = document.getElementById("line");
+    var whoBtn = document.getElementById("who-btn");
+    var characterEl = document.getElementById("character");
+    var noticeEl = document.getElementById("notice");
+    var randomizeBtn = document.getElementById("randomize");
+    var emotion1Emoji = document.getElementById("emotion1-emoji");
+    var emotion1Name = document.getElementById("emotion1-name");
+    var emotion2Emoji = document.getElementById("emotion2-emoji");
+    var emotion2Name = document.getElementById("emotion2-name");
+
+    var lineBag = null;
+    var emotionBag = new ShuffleBag(EMOTIONS, { idOf: function (e) { return e.id; } });
+    var currentLine = null;
+
+    function showNotice(message) {
+      noticeEl.textContent = message;
+      noticeEl.classList.add("is-visible");
+    }
+
+    function hideSpeaker() {
+      characterEl.hidden = true;
+      characterEl.textContent = "";
+      whoBtn.hidden = !currentLine;
+    }
+
+    function revealSpeaker() {
+      if (!currentLine) return;
+      characterEl.textContent = currentLine.character;
+      characterEl.hidden = false;
+      whoBtn.hidden = true;
+    }
+
+    function renderEmotion(slot, emotion) {
+      if (slot === 1) {
+        emotion1Emoji.textContent = emotion.emoji;
+        emotion1Name.textContent = emotion.name;
+      } else {
+        emotion2Emoji.textContent = emotion.emoji;
+        emotion2Name.textContent = emotion.name;
+      }
+    }
+
+    function randomize() {
+      if (!lineBag) return;
+      currentLine = lineBag.draw();
+      var pair = emotionBag.drawPair();
+      lineEl.textContent = "“" + currentLine.line + "”";
+      renderEmotion(1, pair[0]);
+      renderEmotion(2, pair[1]);
+      hideSpeaker();
+    }
+
+    function useLines(lines, fromFallback, reason) {
+      var cleaned = (lines || []).filter(function (item) {
+        return item && item.line && item.character;
+      });
+      if (!cleaned.length) {
+        showNotice("No lines found. Add {character, line} entries to lines.json.");
+        randomizeBtn.disabled = true;
+        return;
+      }
+      lineBag = new ShuffleBag(cleaned, { idOf: function (item) { return item.line; } });
+      if (fromFallback) {
+        showNotice(reason || "Couldn’t load lines.json. Using built-in placeholder lines.");
+      }
+      randomize();
+    }
+
+    whoBtn.addEventListener("click", revealSpeaker);
+    randomizeBtn.addEventListener("click", randomize);
+
+    fetch("./lines.json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!Array.isArray(data)) throw new Error("lines.json must be an array");
+        useLines(data, false);
+      })
+      .catch(function () {
+        useLines(FALLBACK_LINES, true, "Couldn’t load lines.json. Using built-in placeholder lines so you can still rehearse.");
+      });
+  </script>
+</body>
+</html>
