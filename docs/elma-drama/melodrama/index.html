@@ -98,7 +98,7 @@
     }
 
     .line-card {
-      flex: 1.15 1 0;
+      flex: 1.35 1 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -109,15 +109,21 @@
       border: 2px solid var(--gold-deep);
       border-radius: 18px;
       box-shadow: 0 0 0 1px rgba(230, 195, 92, 0.15), 0 10px 28px rgba(0, 0, 0, 0.35);
-      min-height: 22vh;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .line {
       margin: 0;
       text-align: center;
-      font-size: clamp(1.45rem, 3.1vw + 0.7rem, 2.7rem);
+      font-size: clamp(1.35rem, 2.8vw + 0.55rem, 2.5rem);
       line-height: 1.28;
       font-weight: 700;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
     }
 
     .who-row {
@@ -159,11 +165,11 @@
     }
 
     .emotions {
-      flex: 1 1 0;
+      flex: 0.95 1 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      min-height: 26vh;
+      min-height: 0;
     }
 
     .emotion-card {
@@ -241,16 +247,25 @@
         gap: 8px;
       }
       .line-card {
-        min-height: 0;
+        flex: 1.5 1 0;
         padding-top: 10px;
         padding-bottom: 10px;
       }
       .emotions {
-        min-height: 0;
+        flex: 0.85 1 0;
       }
       .emotion-card {
         padding-top: 8px;
         padding-bottom: 8px;
+      }
+      .line {
+        font-size: clamp(1.2rem, 2.1vw + 0.45rem, 2.05rem);
+      }
+      .emotion-emoji {
+        font-size: clamp(2rem, 5.5vw, 3.4rem);
+      }
+      .emotion-name {
+        font-size: clamp(1.05rem, 2.2vw + 0.3rem, 1.65rem);
       }
     }
   </style>
@@ -412,6 +427,7 @@
       characterEl.textContent = currentLine.character;
       characterEl.hidden = false;
       whoBtn.hidden = true;
+      fitLineText();
     }
 
     function renderEmotion(slot, emotion) {
@@ -424,6 +440,20 @@
       }
     }
 
+    function fitLineText() {
+      var card = lineEl.parentElement;
+      if (!card) return;
+      lineEl.style.fontSize = "";
+      var minPx = 18;
+      var size = parseFloat(window.getComputedStyle(lineEl).fontSize);
+      var guard = 0;
+      while (card.scrollHeight > card.clientHeight + 1 && size > minPx && guard < 40) {
+        size -= 1;
+        lineEl.style.fontSize = size + "px";
+        guard += 1;
+      }
+    }
+
     function randomize() {
       if (!lineBag) return;
       currentLine = lineBag.draw();
@@ -432,7 +462,10 @@
       renderEmotion(1, pair[0]);
       renderEmotion(2, pair[1]);
       hideSpeaker();
+      fitLineText();
     }
+
+    window.addEventListener("resize", fitLineText);
 
     function useLines(lines, fromFallback, reason) {
       var cleaned = (lines || []).filter(function (item) {
