@@ -18,6 +18,9 @@
       --ink: #2a080c;
       --muted: #e8c98a;
       --danger: #ffd0a8;
+      --page-pad-x: max(10px, env(safe-area-inset-left), env(safe-area-inset-right));
+      --page-pad-top: max(8px, env(safe-area-inset-top));
+      --page-pad-bottom: max(12px, env(safe-area-inset-bottom));
     }
 
     * {
@@ -29,28 +32,26 @@
     html, body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      max-height: 100svh;
+      overflow: hidden;
       background: radial-gradient(ellipse at top, #4a141c 0%, var(--bg) 55%);
       color: var(--cream);
       font-family: Georgia, "Palatino Linotype", Palatino, "Times New Roman", serif;
       -webkit-text-size-adjust: 100%;
     }
 
-    body {
-      min-height: 100dvh;
-    }
-
     .page {
-      min-height: 100dvh;
-      min-height: 100svh;
+      height: 100%;
+      height: 100dvh;
+      max-height: 100svh;
       display: flex;
       flex-direction: column;
-      padding:
-        max(10px, env(safe-area-inset-top))
-        max(14px, env(safe-area-inset-right))
-        max(10px, env(safe-area-inset-bottom))
-        max(14px, env(safe-area-inset-left));
-      gap: 10px;
+      overflow: hidden;
+      padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+      gap: clamp(6px, 1.2vh, 10px);
     }
 
     header {
@@ -60,28 +61,29 @@
 
     header h1 {
       margin: 0;
-      font-size: clamp(1.35rem, 3.6vw, 2.1rem);
+      font-size: clamp(1.05rem, 2.6vw + 0.4rem, 2.1rem);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--gold);
     }
 
     header p {
-      margin: 4px 0 0;
-      font-size: clamp(0.8rem, 1.8vw, 1rem);
+      margin: 2px 0 0;
+      font-size: clamp(0.7rem, 1.5vw, 1rem);
       color: var(--muted);
       letter-spacing: 0.04em;
     }
 
     .notice {
       display: none;
+      flex: 0 0 auto;
       margin: 0;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border: 1px solid var(--gold-deep);
       border-radius: 10px;
       background: rgba(80, 20, 20, 0.7);
       color: var(--danger);
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       text-align: center;
     }
 
@@ -93,22 +95,23 @@
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: clamp(6px, 1.2vh, 10px);
       min-height: 0;
+      overflow: hidden;
     }
 
     .line-card {
-      flex: 1.35 1 0;
+      flex: 1 1 auto;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 12px;
-      padding: clamp(12px, 2.4vh, 22px) clamp(14px, 2.5vw, 28px);
+      gap: clamp(6px, 1.2vh, 12px);
+      padding: clamp(8px, 1.6vh, 22px) clamp(10px, 2.2vw, 28px);
       background: linear-gradient(180deg, var(--bg-card-2), var(--bg-card));
       border: 2px solid var(--gold-deep);
-      border-radius: 18px;
-      box-shadow: 0 0 0 1px rgba(230, 195, 92, 0.15), 0 10px 28px rgba(0, 0, 0, 0.35);
+      border-radius: 16px;
+      box-shadow: 0 0 0 1px rgba(230, 195, 92, 0.15);
       min-height: 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -118,8 +121,8 @@
     .line {
       margin: 0;
       text-align: center;
-      font-size: clamp(1.35rem, 2.8vw + 0.55rem, 2.5rem);
-      line-height: 1.28;
+      font-size: clamp(1.05rem, 2.2vw + 0.45rem, 2.4rem);
+      line-height: 1.25;
       font-weight: 700;
       max-width: 100%;
       overflow-wrap: break-word;
@@ -130,7 +133,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 48px;
+      flex: 0 0 auto;
+      min-height: 40px;
     }
 
     .who-btn {
@@ -139,10 +143,10 @@
       background: transparent;
       color: var(--gold);
       font: inherit;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       letter-spacing: 0.04em;
-      padding: 10px 16px;
-      min-height: 44px;
+      padding: 8px 14px;
+      min-height: 40px;
       border-radius: 999px;
       cursor: pointer;
     }
@@ -159,17 +163,18 @@
     .character {
       margin: 0;
       color: var(--gold);
-      font-size: clamp(1.1rem, 2.4vw + 0.4rem, 1.7rem);
+      font-size: clamp(0.95rem, 2vw + 0.3rem, 1.6rem);
       letter-spacing: 0.06em;
       text-align: center;
     }
 
     .emotions {
-      flex: 0.95 1 0;
+      flex: 0 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: clamp(6px, 1.2vw, 10px);
       min-height: 0;
+      overflow: visible;
     }
 
     .emotion-card {
@@ -178,57 +183,61 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      gap: 6px;
-      padding: clamp(10px, 1.8vh, 18px) 10px;
+      gap: 4px;
+      padding: clamp(6px, 1.2vh, 16px) clamp(6px, 1.4vw, 12px);
       background: #2c0c11;
       border: 2px solid var(--gold);
-      border-radius: 16px;
+      border-radius: 14px;
       min-width: 0;
+      overflow: visible;
     }
 
     .emotion-label {
       margin: 0;
-      font-size: clamp(0.72rem, 1.5vw, 0.95rem);
-      letter-spacing: 0.14em;
+      font-size: clamp(0.6rem, 1.3vw, 0.9rem);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold);
     }
 
     .emotion-emoji {
-      font-size: clamp(2.4rem, 7vw, 4.4rem);
+      font-size: clamp(1.45rem, 4.2vh, 3.6rem);
       line-height: 1;
       font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
     }
 
     .emotion-name {
       margin: 0;
-      font-size: clamp(1.15rem, 2.6vw + 0.35rem, 1.95rem);
-      line-height: 1.2;
+      font-size: clamp(0.88rem, 2vw + 0.25rem, 1.7rem);
+      line-height: 1.15;
       font-weight: 700;
       color: var(--cream);
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
 
     .randomize {
       appearance: none;
+      position: static;
       flex: 0 0 auto;
       width: 100%;
-      min-height: clamp(72px, 14vh, 118px);
+      min-height: clamp(48px, 9vh, 96px);
       border: 0;
-      border-radius: 18px;
+      border-radius: 16px;
       background: linear-gradient(180deg, #f0d36a, var(--gold-deep));
       color: var(--ink);
       font: inherit;
-      font-size: clamp(1.7rem, 5vw, 2.7rem);
+      font-size: clamp(1.2rem, 4vw, 2.4rem);
       font-weight: 800;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 8px 0 #7a5a10, 0 12px 22px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 0 #7a5a10;
     }
 
     .randomize:active {
-      transform: translateY(4px);
-      box-shadow: 0 4px 0 #7a5a10, 0 6px 12px rgba(0, 0, 0, 0.35);
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #7a5a10;
     }
 
     .randomize:disabled {
@@ -236,36 +245,70 @@
       box-shadow: none;
     }
 
-    @media (max-width: 560px) {
+    /* Very narrow: stack emotions as compact rows so names stay visible. */
+    @media (max-width: 339px) {
       .emotions {
         grid-template-columns: 1fr;
       }
-    }
-
-    @media (orientation: landscape) and (max-height: 820px) {
-      .page {
-        gap: 8px;
-      }
-      .line-card {
-        flex: 1.5 1 0;
-        padding-top: 10px;
-        padding-bottom: 10px;
-      }
-      .emotions {
-        flex: 0.85 1 0;
-      }
       .emotion-card {
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-      .line {
-        font-size: clamp(1.2rem, 2.1vw + 0.45rem, 2.05rem);
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+        gap: 10px;
+        padding: 6px 10px;
       }
       .emotion-emoji {
-        font-size: clamp(2rem, 5.5vw, 3.4rem);
+        font-size: 1.6rem;
+        flex: 0 0 auto;
+      }
+      .emotion-label,
+      .emotion-name {
+        display: block;
+      }
+    }
+
+    @media (max-height: 420px) {
+      header p {
+        display: none;
+      }
+      header h1 {
+        font-size: clamp(0.9rem, 2.4vw, 1.2rem);
+        letter-spacing: 0.2em;
+      }
+      .page {
+        gap: 5px;
+        padding-top: max(4px, env(safe-area-inset-top));
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+      }
+      .stage {
+        gap: 5px;
+      }
+      .line-card {
+        padding: 6px 10px;
+        gap: 4px;
+      }
+      .who-row {
+        min-height: 32px;
+      }
+      .who-btn {
+        min-height: 32px;
+        padding: 4px 10px;
+        font-size: 0.8rem;
+      }
+      .emotion-card {
+        padding: 4px 8px;
+        gap: 2px;
+      }
+      .emotion-emoji {
+        font-size: clamp(1.2rem, 8vh, 1.8rem);
       }
       .emotion-name {
-        font-size: clamp(1.05rem, 2.2vw + 0.3rem, 1.65rem);
+        font-size: clamp(0.8rem, 2vw + 0.2rem, 1.15rem);
+      }
+      .randomize {
+        min-height: 44px;
+        font-size: clamp(1.05rem, 3.6vw, 1.5rem);
+        box-shadow: 0 3px 0 #7a5a10;
       }
     }
   </style>
@@ -444,7 +487,7 @@
       var card = lineEl.parentElement;
       if (!card) return;
       lineEl.style.fontSize = "";
-      var minPx = 18;
+      var minPx = 15;
       var size = parseFloat(window.getComputedStyle(lineEl).fontSize);
       var guard = 0;
       while (card.scrollHeight > card.clientHeight + 1 && size > minPx && guard < 40) {
